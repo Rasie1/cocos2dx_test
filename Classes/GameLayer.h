@@ -35,7 +35,7 @@ public:
 class Tileset
 {
 public:
-	std::string * textures;
+	std::vector<std::string> textures;
 	Tileset();
 
 	/*std::string operator[](const int& i)
@@ -47,8 +47,9 @@ public:
 class MapInfo
 {
 public:
-	Size size;
-	Vec2 player_start;
+	Size mapSize;
+	int tileSize;
+	Vec2 playerStart;
 	MapGenerator * generator;
 	Tileset * tileset;
 	int ** tiles;
@@ -75,9 +76,13 @@ public:
 
 
 	void scroll(Vec2 delta);
+	void update();
+
 	Terrain(MapInfo * currentMap);
 	~Terrain() {}
-	Terrain * Terrain::create(MapInfo * currentMap);
+	static Terrain * create(MapInfo * currentMap);
+private:
+	Vec2 _renderingCenterPosition, _cameraCenterPosition;
 };
 
 

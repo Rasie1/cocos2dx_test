@@ -3,22 +3,6 @@
 
 #include "cocos2d.h"
 #include "GameLayer.h"
-/*
-class GameSprite : public Sprite
-{
-public:
-	Vec2 vector;
-	Touch * touch;
-	Vec2 nextPosition;
-	//Size size;
-
-	GameSprite();
-	~GameSprite();
-
-	static GameSprite * gameSpriteWithFile(const char * fileName);
-	virtual void setPosition(const Vec2& pos);
-
-};*/
 
 
 class MainScene : public cocos2d::Layer
@@ -30,11 +14,15 @@ public:
     
     Terrain * terrain;
 
-    // a selector callback
+    void update(float delayTime);
+    void updateInfo(float delayTime);
     void menuCloseCallback(cocos2d::Ref* pSender);
     
-    // implement the "static create()" method manually
     CREATE_FUNC(MainScene);
+
+    Vec2 delta;
+    Size visibleSize;
+    Vec2 origin, center;
 };
 
 #endif

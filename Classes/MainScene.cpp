@@ -18,8 +18,9 @@ bool MainScene::init()
 	{
 		return false;
 	}
-	Size visibleSize = Director::getInstance()->getVisibleSize();
-	Vec2 origin = Director::getInstance()->getVisibleOrigin();
+	visibleSize = Director::getInstance()->getVisibleSize();
+	origin = Director::getInstance()->getVisibleOrigin();
+	center = Vec2(visibleSize.width/2, visibleSize.height / 2);
 
 	auto closeItem = MenuItemImage::create("CloseNormal.png",
 			"CloseSelected.png",
@@ -35,11 +36,58 @@ bool MainScene::init()
 	auto menu = Menu::create(closeItem, NULL);
 	menu->setPosition(Vec2::ZERO);
 	this->addChild(menu, 999);
-	auto m = new MapInfo(Size(50,40));
-	auto t = new Terrain(m);
-	this->addChild(t->batchNodes[0], 7);
+	auto m = new MapInfo(Size(90,90));
+	terrain = Terrain::create(m);
+	this->addChild(terrain, 7);
+	delta = Vec2(0, 0);
 
+	auto listener = EventListenerKeyboard::create();
+	listener->onKeyPressed = [=](EventKeyboard::KeyCode keyCode, Event* event)
+	{
+		switch (keyCode)
+		{
+		case EventKeyboard::KeyCode::KEY_UP_ARROW :
+		{
+			delta = Vec2(0, -3);
+			break;
+		}
+		case EventKeyboard::KeyCode::KEY_DOWN_ARROW:
+		{
+			delta = Vec2(0, 3);
+			break;
+		}
+		case EventKeyboard::KeyCode::KEY_RIGHT_ARROW:
+		{
+			delta = Vec2(-3, 0);
+			break;
+		}
+		case EventKeyboard::KeyCode::KEY_LEFT_ARROW:
+		{
+			delta = Vec2(3, 0);
+			break;
+		}
+		case EventKeyboard::KeyCode::KEY_1:
+		{
+			delta = Vec2(0, 0);
+			break;
+		}
+		}
+	};
+	_eventDispatcher->addEventListenerWithSceneGraphPriority(listener, this);
+
+	this->schedule(schedule_selector(MainScene::update));
+	this->schedule(schedule_selector(MainScene::updateInfo), 0.1f);
 	return true;
+}
+
+void MainScene::update(float delayTime)
+{
+	terrain->scroll(delta);
+}
+
+void MainScene::updateInfo(float delayTime)
+{
+	terrain->update();
 }
 
 void MainScene::menuCloseCallback(Ref* pSender)
