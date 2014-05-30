@@ -63,7 +63,7 @@ private:
 };
 
 
-class Terrain
+class Terrain : public Layer
 {
 public:
 	MapInfo * map;
@@ -77,6 +77,7 @@ public:
 	void scroll(Vec2 delta);
 	Terrain(MapInfo * currentMap);
 	~Terrain() {}
+	Terrain * Terrain::create(MapInfo * currentMap);
 };
 
 

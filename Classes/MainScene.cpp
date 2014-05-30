@@ -35,9 +35,9 @@ bool MainScene::init()
 	auto menu = Menu::create(closeItem, NULL);
 	menu->setPosition(Vec2::ZERO);
 	this->addChild(menu, 999);
-	auto m = new MapInfo(Size(30,20));
+	auto m = new MapInfo(Size(50,40));
 	auto t = new Terrain(m);
-
+	this->addChild(t->batchNodes[0], 7);
 
 	return true;
 }
