@@ -12,17 +12,23 @@ public:
 
     virtual bool init();  
     
-    Terrain * terrain;
+    MainLayer * level;
 
     void update(float delayTime);
     void updateInfo(float delayTime);
+
     void menuCloseCallback(cocos2d::Ref* pSender);
-    
+    void keyboardPressCallback(EventKeyboard::KeyCode keyCode, Event * event);
+    void mouseDownCallback(Event * event);
     CREATE_FUNC(MainScene);
 
     Vec2 delta;
     Size visibleSize;
     Vec2 origin, center;
 };
+
+
+
+
 
 #endif

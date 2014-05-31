@@ -24,6 +24,9 @@ enum
 	TILE_WALL
 };
 
+
+
+
 class MapGenerator
 {
 public:
@@ -64,36 +67,51 @@ private:
 };
 
 
-class Terrain : public Layer
+class MainLayer : public Layer
 {
 public:
 	MapInfo * map;
 	//Vec2 playerPosition;
 	//Vec2 cameraPosition;
 	//Size & screenSize;
-	Sprite ***  sprites;
+	Sprite ***  terrain;
+	//Vector<Creature> creatures;
+
+
 	SpriteBatchNode ** batchNodes;
 
 
 	void scroll(Vec2 delta);
 	void update();
 
-	Terrain(MapInfo * currentMap);
-	~Terrain() {}
-	static Terrain * create(MapInfo * currentMap);
+	MainLayer(MapInfo * currentMap);
+	~MainLayer() {}
+	static MainLayer * create(MapInfo * currentMap);
 private:
 	Vec2 _renderingCenterPosition, _cameraCenterPosition;
 };
 
 
-/*
-class Creature
+
+class Creature : public Sprite
 {
 public:
 	int health;
+	Size boundingBox;
 	Vec2 moveVector;
+	void MoveTo(Vec2 target);
+	void MoveBy(Vec2 delta);
+	Creature(Vec2 pos);
+    static Creature* create(Vec2 pos);
+
+};
+/*
+class Player : public Creature
+{
+public:
+	Player();
+	static Player* create();
 };
 */
-
 
 #endif

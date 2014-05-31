@@ -18,6 +18,7 @@ bool MainScene::init()
 	{
 		return false;
 	}
+
 	visibleSize = Director::getInstance()->getVisibleSize();
 	origin = Director::getInstance()->getVisibleOrigin();
 	center = Vec2(visibleSize.width/2, visibleSize.height / 2);
@@ -36,58 +37,46 @@ bool MainScene::init()
 	auto menu = Menu::create(closeItem, NULL);
 	menu->setPosition(Vec2::ZERO);
 	this->addChild(menu, 999);
-	auto m = new MapInfo(Size(90,90));
-	terrain = Terrain::create(m);
-	this->addChild(terrain, 7);
+	auto m = new MapInfo(Size(1000,1000));
+	level = MainLayer::create(m);
+	this->addChild(level, 7);
 	delta = Vec2(0, 0);
 
-	auto listener = EventListenerKeyboard::create();
-	listener->onKeyPressed = [=](EventKeyboard::KeyCode keyCode, Event* event)
-	{
-		switch (keyCode)
-		{
-		case EventKeyboard::KeyCode::KEY_UP_ARROW :
-		{
-			delta = Vec2(0, -3);
-			break;
-		}
-		case EventKeyboard::KeyCode::KEY_DOWN_ARROW:
-		{
-			delta = Vec2(0, 3);
-			break;
-		}
-		case EventKeyboard::KeyCode::KEY_RIGHT_ARROW:
-		{
-			delta = Vec2(-3, 0);
-			break;
-		}
-		case EventKeyboard::KeyCode::KEY_LEFT_ARROW:
-		{
-			delta = Vec2(3, 0);
-			break;
-		}
-		case EventKeyboard::KeyCode::KEY_1:
-		{
-			delta = Vec2(0, 0);
-			break;
-		}
-		}
-	};
-	_eventDispatcher->addEventListenerWithSceneGraphPriority(listener, this);
+	auto keyboardListener = EventListenerKeyboard::create();
+	keyboardListener->onKeyPressed = CC_CALLBACK_2(MainScene::keyboardPressCallback, this);
+	_eventDispatcher->addEventListenerWithSceneGraphPriority(keyboardListener, this);
+	auto mouseListener = EventListenerMouse::create();
+	mouseListener->onMouseDown = CC_CALLBACK_1(MainScene::mouseDownCallback, this);
+	_eventDispatcher->addEventListenerWithSceneGraphPriority(mouseListener, this);
+
+
+
+
+	auto p = Creature::create(Vec2(3,4));
+	this->addChild(p, 9999);
+
+
 
 	this->schedule(schedule_selector(MainScene::update));
 	this->schedule(schedule_selector(MainScene::updateInfo), 0.1f);
+	//this->terrain->setVisible(false);
 	return true;
 }
 
+
 void MainScene::update(float delayTime)
 {
-	terrain->scroll(delta);
+	level->scroll(delta);
 }
 
 void MainScene::updateInfo(float delayTime)
 {
-	terrain->update();
+	level->update();
+}
+
+void MainScene::mouseDownCallback(Event * event)
+{
+	delta = Vec2(0,0);
 }
 
 void MainScene::menuCloseCallback(Ref* pSender)
@@ -99,3 +88,39 @@ void MainScene::menuCloseCallback(Ref* pSender)
 	exit(0);
 #endif
 }
+
+
+void MainScene::keyboardPressCallback(EventKeyboard::KeyCode keyCode, Event * event)
+	{
+		switch (keyCode)
+		{
+		case EventKeyboard::KeyCode::KEY_UP_ARROW :
+		{
+			delta += Vec2(0, -3);
+			break;
+		}
+		case EventKeyboard::KeyCode::KEY_DOWN_ARROW:
+		{
+			delta += Vec2(0, 3);
+			break;
+		}
+		case EventKeyboard::KeyCode::KEY_RIGHT_ARROW:
+		{
+			delta += Vec2(-3, 0);
+			break;
+		}
+		case EventKeyboard::KeyCode::KEY_LEFT_ARROW:
+		{
+			delta += Vec2(3, 0);
+			break;
+		}
+		case EventKeyboard::KeyCode::KEY_1:
+		{
+			delta = Vec2(0, 0);
+			break;
+		}
+		default:
+			break;
+		}
+}
+
