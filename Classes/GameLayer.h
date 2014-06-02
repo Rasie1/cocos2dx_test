@@ -2,9 +2,11 @@
 #define __GAMELAYER_H__
 
 #include "cocos2d.h"
+#include "actor.h"
 USING_NS_CC;
 
-
+class Actor;
+class Creature;
 
 enum
 {
@@ -25,12 +27,11 @@ enum
 };
 
 
-
-
 class MapGenerator
 {
 public:
 	int getNextTile();
+	int getNextObject();
 
 	MapGenerator() {}
 };
@@ -56,6 +57,8 @@ public:
 	MapGenerator * generator;
 	Tileset * tileset;
 	int ** tiles;
+	int ** actors;
+
 
 	MapInfo(const Size size);
 	~MapInfo();
@@ -67,6 +70,7 @@ private:
 };
 
 
+
 class MainLayer : public Layer
 {
 public:
@@ -75,8 +79,10 @@ public:
 	//Vec2 cameraPosition;
 	//Size & screenSize;
 	Sprite ***  terrain;
-	//Vector<Creature> creatures;
-
+	Vector< Actor*> actors;
+	Vector< Actor*> localActors;
+	Creature * cr;
+	//Player * player;
 
 	SpriteBatchNode ** batchNodes;
 
@@ -92,26 +98,5 @@ private:
 };
 
 
-
-class Creature : public Sprite
-{
-public:
-	int health;
-	Size boundingBox;
-	Vec2 moveVector;
-	void MoveTo(Vec2 target);
-	void MoveBy(Vec2 delta);
-	Creature(Vec2 pos);
-    static Creature* create(Vec2 pos);
-
-};
-/*
-class Player : public Creature
-{
-public:
-	Player();
-	static Player* create();
-};
-*/
 
 #endif

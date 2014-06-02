@@ -1,5 +1,6 @@
 #include "MainScene.h"
 #include "GameLayer.h"
+#include "actor.h"
 
 USING_NS_CC;
 
@@ -37,7 +38,7 @@ bool MainScene::init()
 	auto menu = Menu::create(closeItem, NULL);
 	menu->setPosition(Vec2::ZERO);
 	this->addChild(menu, 999);
-	auto m = new MapInfo(Size(1000,1000));
+	auto m = new MapInfo(Size(150,150));
 	level = MainLayer::create(m);
 	this->addChild(level, 7);
 	delta = Vec2(0, 0);
@@ -45,20 +46,20 @@ bool MainScene::init()
 	auto keyboardListener = EventListenerKeyboard::create();
 	keyboardListener->onKeyPressed = CC_CALLBACK_2(MainScene::keyboardPressCallback, this);
 	_eventDispatcher->addEventListenerWithSceneGraphPriority(keyboardListener, this);
-	auto mouseListener = EventListenerMouse::create();
-	mouseListener->onMouseDown = CC_CALLBACK_1(MainScene::mouseDownCallback, this);
-	_eventDispatcher->addEventListenerWithSceneGraphPriority(mouseListener, this);
+	//auto mouseListener = EventListenerMouse::create();
+	//mouseListener->onMouseDown = CC_CALLBACK_1(MainScene::mouseDownCallback, this);
+	//_eventDispatcher->addEventListenerWithSceneGraphPriority(mouseListener, this);
+	auto touchListener = EventListenerTouchOneByOne::create();
+	touchListener->onTouchBegan = CC_CALLBACK_2(MainScene::touchBeganCallback, this);
+	_eventDispatcher->addEventListenerWithSceneGraphPriority(touchListener, this);
 
-
-
-
-	auto p = Creature::create(Vec2(3,4));
-	this->addChild(p, 9999);
-
+	c = Creature::create(m->playerStart, level);
+	level->addChild(c, 999);
+	level->setPosition(center);
 
 
 	this->schedule(schedule_selector(MainScene::update));
-	this->schedule(schedule_selector(MainScene::updateInfo), 0.1f);
+	this->schedule(schedule_selector(MainScene::updateInfo), 0.5f);
 	//this->terrain->setVisible(false);
 	return true;
 }
@@ -66,7 +67,8 @@ bool MainScene::init()
 
 void MainScene::update(float delayTime)
 {
-	level->scroll(delta);
+	//level->scroll(delta);
+	c->act();
 }
 
 void MainScene::updateInfo(float delayTime)
@@ -74,9 +76,20 @@ void MainScene::updateInfo(float delayTime)
 	level->update();
 }
 
+bool MainScene::touchBeganCallback(Touch * touch, Event * event)
+{
+	delta = Vec2(0, 0);
+	this->c->MoveTo(level->convertToNodeSpace(touch->getLocation()));
+
+	return true;
+}
+
+
 void MainScene::mouseDownCallback(Event * event)
 {
-	delta = Vec2(0,0);
+	//delta = Vec2(0,0);
+	//EventMouse * click = (EventMouse *)event;
+	//this->c->MoveTo(Vec2(click->getCursorX(), click->getCursorY()));
 }
 
 void MainScene::menuCloseCallback(Ref* pSender)

@@ -13,6 +13,7 @@ public:
     virtual bool init();  
     
     MainLayer * level;
+	Creature * c;
 
     void update(float delayTime);
     void updateInfo(float delayTime);
@@ -20,6 +21,7 @@ public:
     void menuCloseCallback(cocos2d::Ref* pSender);
     void keyboardPressCallback(EventKeyboard::KeyCode keyCode, Event * event);
     void mouseDownCallback(Event * event);
+	bool touchBeganCallback(Touch * touch, Event * event);
     CREATE_FUNC(MainScene);
 
     Vec2 delta;
